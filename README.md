@@ -7,3 +7,5 @@
 - https://www.apollographql.com/docs/react/get-started
 
 - https://mantine.dev/pages/getting-started/
+
+- https://react-hook-form.com/get-started/
