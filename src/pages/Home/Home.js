@@ -15,9 +15,13 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Lock, Search } from "@mui/icons-material";
 import { Modal } from "@mantine/core";
-import { Alert, LinearProgress, Paper } from "@mui/material";
+import { Alert, CircularProgress, LinearProgress, Paper } from "@mui/material";
 import Login from "../Login/Login";
 import CreatAccount from "../CreateAccount/CreatAccount";
+import { useQuery } from "@apollo/client";
+import { GET_PUBLIC_CONTACTS } from "./graphQL";
+
+import noData from "../../assets/no_data.png";
 
 const drawerWidth = 240;
 const navItems = ["Login"];
@@ -31,6 +35,8 @@ function Home(props) {
 
   const [loading, setLoading] = React.useState(false);
   const [account, setAccount] = React.useState(false);
+
+  const { data, loading: loader } = useQuery(GET_PUBLIC_CONTACTS);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -175,7 +181,33 @@ function Home(props) {
             </Paper>
           </Modal>
 
-          <div className="row"></div>
+          {loader && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "80vh",
+              }}
+            >
+              <CircularProgress color="info" thickness={3} size={`12rem`} />
+            </div>
+          )}
+
+          {data && data.getPublicContacts.length === 0 ? (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "80vh",
+              }}
+            >
+              <img src={noData} style={{ width: 600 }} />
+            </div>
+          ) : (
+            <div className="row"></div>
+          )}
         </Box>
       </Box>
     </>

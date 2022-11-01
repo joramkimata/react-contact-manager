@@ -1,3 +1,4 @@
+import { useReactiveVar } from "@apollo/client";
 import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
@@ -19,15 +20,21 @@ import { showToastTop } from "./utils/helpers";
 import { IdleTimer } from "./utils/IdleTimer";
 
 function App() {
+  const isLoggedIn = useReactiveVar(isLoggedInVar);
+
   useEffect(() => {
     const timer = new IdleTimer({
       timeout: 120, //expire after 5 min
       onTimeout: () => {
-        callLogoutUser();
+        if (isLoggedIn) {
+          callLogoutUser();
+        }
       },
       onExpired: () => {
         // do something if expired on load
-        callLogoutUser();
+        if (isLoggedIn) {
+          callLogoutUser();
+        }
       },
     });
 
