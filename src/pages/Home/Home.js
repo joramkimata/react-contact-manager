@@ -15,7 +15,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Lock, Search } from "@mui/icons-material";
 import { Modal } from "@mantine/core";
-import { LinearProgress, Paper } from "@mui/material";
+import { Alert, LinearProgress, Paper } from "@mui/material";
 import Login from "../Login/Login";
 import CreatAccount from "../CreateAccount/CreatAccount";
 
@@ -135,7 +135,8 @@ function Home(props) {
             {drawer}
           </Drawer>
         </Box>
-        <Box component="main" sx={{ p: 3 }}>
+        <Box component="main" sx={{ p: 3, width: "100%" }}>
+          <Toolbar />
           <Modal
             size="lg"
             opened={opened}
@@ -173,6 +174,8 @@ function Home(props) {
               )}
             </Paper>
           </Modal>
+
+          <div className="row"></div>
         </Box>
       </Box>
     </>

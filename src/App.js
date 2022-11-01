@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -21,7 +21,7 @@ import { IdleTimer } from "./utils/IdleTimer";
 function App() {
   useEffect(() => {
     const timer = new IdleTimer({
-      timeout: 300, //expire after 5 min
+      timeout: 120, //expire after 5 min
       onTimeout: () => {
         callLogoutUser();
       },
@@ -37,11 +37,13 @@ function App() {
   }, []);
 
   const callLogoutUser = () => {
-    showToastTop(`Session Expired, Login again!`);
+    showToastTop(`Session Expired, Login again!`, false, {
+      autoClose: false,
+      position: "top-center",
+    });
     localStorage.removeItem(ACCESS_TOKEN);
     // Set the logged-in status to false
     isLoggedInVar(false);
-    window.location = "";
   };
 
   return (

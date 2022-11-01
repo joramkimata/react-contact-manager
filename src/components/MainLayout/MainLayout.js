@@ -13,7 +13,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   AccountBoxOutlined,
   ContactEmergency,
@@ -75,9 +75,18 @@ const menuList = [
 ];
 
 export default function MainLayout() {
+  const [selectedMenu, setSelectedMenu] = React.useState("Dashboard");
+
   const navigate = useNavigate();
 
-  const [selectedMenu, setSelectedMenu] = React.useState("Dashboard");
+  const location = useLocation();
+
+  React.useEffect(() => {
+    const path = location.pathname.split("/")[1];
+    if (path) {
+      setSelectedMenu(path);
+    }
+  }, [location, selectedMenu]);
 
   return (
     <Box sx={{ display: "flex" }}>
