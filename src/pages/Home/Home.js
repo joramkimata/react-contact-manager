@@ -15,10 +15,9 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Lock, Search } from "@mui/icons-material";
 import { Modal } from "@mantine/core";
-import { Paper, TextField } from "@mui/material";
-
-import logo from "./../../assets/logo-cm.png";
-import { useForm } from "react-hook-form";
+import { LinearProgress, Paper } from "@mui/material";
+import Login from "../Login/Login";
+import CreatAccount from "../CreateAccount/CreatAccount";
 
 const drawerWidth = 240;
 const navItems = ["Login"];
@@ -30,12 +29,8 @@ function Home(props) {
   const [opened, setOpened] = React.useState(false);
   const [accountTitle, setAccountTitle] = React.useState(`Login`);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const [loading, setLoading] = React.useState(false);
+  const [account, setAccount] = React.useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -47,7 +42,10 @@ function Home(props) {
     }
   };
 
-  const onSubmit = (data) => {};
+  const createAccount = () => {
+    setAccount(true);
+    setAccountTitle(`Create Account`);
+  };
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -165,62 +163,14 @@ function Home(props) {
               </div>
               <Typography variant="h5">{accountTitle}</Typography>
             </Paper>
+            {loading && <LinearProgress />}
 
             <Paper sx={{ mt: 2, padding: 1 }}>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <TextField
-                  label="Email"
-                  sx={{ mb: 2 }}
-                  variant="outlined"
-                  fullWidth
-                  {...register("email", {
-                    required: "Email required",
-                  })}
-                  error={Boolean(errors.email)}
-                  helperText={errors.email?.message}
-                />
-
-                <TextField
-                  label="Password"
-                  type="password"
-                  {...register("password")}
-                  error={Boolean(errors.password)}
-                  helperText={errors.password?.message}
-                  variant="outlined"
-                  fullWidth
-                />
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginY: 1,
-                    mt: 2,
-                  }}
-                >
-                  <span
-                    onClick={() => null}
-                    style={{
-                      textDecoration: "underline",
-                      color: "darkblue",
-                      fontStyle: "italic",
-                      cursor: "pointer",
-                      fontSize: 16,
-                    }}
-                  >
-                    Create Account
-                  </span>
-
-                  <Button
-                    type="submit"
-                    sx={{ backgroundColor: "#434670" }}
-                    variant="contained"
-                  >
-                    Login
-                  </Button>
-                </Box>
-              </form>
+              {account ? (
+                <CreatAccount loginIn={() => setAccount(false)} />
+              ) : (
+                <Login setLoading={setLoading} createAccount={createAccount} />
+              )}
             </Paper>
           </Modal>
         </Box>
