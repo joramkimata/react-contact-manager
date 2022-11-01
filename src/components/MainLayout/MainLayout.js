@@ -14,7 +14,18 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { Dashboard, ExitToApp } from "@mui/icons-material";
+import {
+  AccountBoxOutlined,
+  ContactEmergency,
+  ContactEmergencyOutlined,
+  ContactMailOutlined,
+  Dashboard,
+  ExitToApp,
+  ListAlt,
+  Settings,
+} from "@mui/icons-material";
+
+import contactLogo from "../../assets/contacts.png";
 
 const drawerWidth = 240;
 
@@ -26,10 +37,47 @@ const menuList = [
     icon: <Dashboard />,
     permissions: [],
   },
+  {
+    key: "my-contacts",
+    title: "My Contacts",
+    url: "/my-contacts",
+    icon: <ContactEmergencyOutlined />,
+    permissions: [],
+  },
+  {
+    key: "contacts",
+    title: "Contacts",
+    url: "/contacts",
+    icon: <ContactMailOutlined />,
+    permissions: [],
+  },
+  {
+    key: "users",
+    title: "Users",
+    url: "/users",
+    icon: <AccountBoxOutlined />,
+    permissions: [],
+  },
+  {
+    key: "roles",
+    title: "Roles",
+    url: "/roles",
+    icon: <ListAlt />,
+    permissions: [],
+  },
+  {
+    key: "settings",
+    title: "Settings",
+    url: "/settings",
+    icon: <Settings />,
+    permissions: [],
+  },
 ];
 
 export default function MainLayout() {
   const navigate = useNavigate();
+
+  const [selectedMenu, setSelectedMenu] = React.useState("Dashboard");
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -58,10 +106,35 @@ export default function MainLayout() {
       >
         <Toolbar />
         <Box sx={{ overflow: "auto" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              padding: 10,
+              justifyContent: "center",
+            }}
+          >
+            <img
+              src={contactLogo}
+              style={{
+                width: 100,
+                border: "2px solid rgba(0, 0, 0, 0.12)",
+                borderRadius: 50,
+                padding: 5,
+              }}
+            />
+          </div>
           <List>
             {menuList.map(({ key, icon, title, url }) => (
-              <ListItem onClick={() => navigate(url)} key={key} disablePadding>
-                <ListItemButton>
+              <ListItem
+                onClick={() => {
+                  navigate(url);
+                  setSelectedMenu(title);
+                }}
+                key={key}
+                disablePadding
+              >
+                <ListItemButton selected={selectedMenu === title}>
                   <ListItemIcon>{icon}</ListItemIcon>
                   <ListItemText primary={title} />
                 </ListItemButton>
