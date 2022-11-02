@@ -1,0 +1,15 @@
+.ant-modal-header {
+    background-color: rgb(252, 253, 254, 0.7) !important;
+}
+
+.ant-modal-title {
+    color: white;
+}
+
+.ant-modal-close {
+    color: white;
+}
+
+.ant-modal-close:hover {
+    color: white;
+}

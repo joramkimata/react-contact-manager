@@ -10,6 +10,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Auth from "./components/Auth/Auth";
 import MainLayout from "./components/MainLayout/MainLayout";
+import useIdleTimer from "./hooks/useIdleTimer";
+import useLogout from "./hooks/useLogout";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
@@ -20,37 +22,18 @@ import { showToastTop } from "./utils/helpers";
 import { IdleTimer } from "./utils/IdleTimer";
 
 function App() {
-  const isLoggedIn = useReactiveVar(isLoggedInVar);
+  const { logout } = useLogout();
 
-  useEffect(() => {
-    const timer = new IdleTimer({
-      timeout: 120, //expire after 5 min
-      onTimeout: () => {
-        if (isLoggedIn) {
-          callLogoutUser();
-        }
-      },
-      onExpired: () => {
-        // do something if expired on load
-        if (isLoggedIn) {
-          callLogoutUser();
-        }
-      },
-    });
-
-    return () => {
-      timer.cleanUp();
-    };
-  }, []);
+  useIdleTimer(() => {
+    callLogoutUser();
+  });
 
   const callLogoutUser = () => {
     showToastTop(`Session Expired, Login again!`, false, {
       autoClose: false,
       position: "top-center",
     });
-    localStorage.removeItem(ACCESS_TOKEN);
-    // Set the logged-in status to false
-    isLoggedInVar(false);
+    logout();
   };
 
   return (

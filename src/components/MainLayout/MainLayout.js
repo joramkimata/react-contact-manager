@@ -16,11 +16,9 @@ import MailIcon from "@mui/icons-material/Mail";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   AccountBoxOutlined,
-  ContactEmergency,
   ContactEmergencyOutlined,
   ContactMailOutlined,
   Dashboard,
-  ExitToApp,
   ListAlt,
   Settings,
 } from "@mui/icons-material";
@@ -75,7 +73,7 @@ const menuList = [
 ];
 
 export default function MainLayout() {
-  const [selectedMenu, setSelectedMenu] = React.useState("Dashboard");
+  const [selectedMenu, setSelectedMenu] = React.useState("dashboard");
 
   const navigate = useNavigate();
 
@@ -86,7 +84,7 @@ export default function MainLayout() {
     if (path) {
       setSelectedMenu(path);
     }
-  }, [location, selectedMenu]);
+  }, [location]);
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -143,7 +141,7 @@ export default function MainLayout() {
                 key={key}
                 disablePadding
               >
-                <ListItemButton selected={selectedMenu === title}>
+                <ListItemButton selected={selectedMenu === key}>
                   <ListItemIcon>{icon}</ListItemIcon>
                   <ListItemText primary={title} />
                 </ListItemButton>
