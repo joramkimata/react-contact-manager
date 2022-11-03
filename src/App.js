@@ -16,7 +16,7 @@ function App() {
 
   useIdleTimer(() => {
     callLogoutUser();
-  });
+  }, 3000);
 
   const callLogoutUser = () => {
     showToastTop(`Session Expired, Login again!`, false, {
