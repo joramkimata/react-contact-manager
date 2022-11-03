@@ -39,6 +39,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
           break;
         case UN_AUTHENTICATED:
           showToastTop(`Un-authorization  request`);
+          window.location = "/";
           break;
         case BAD_USER_INPUT:
           showToastTop(extensions.response.message[0]);
