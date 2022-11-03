@@ -1,6 +1,13 @@
-import { Paper, Typography } from "@mui/material";
+import { List } from "@mui/icons-material";
+import { LinearProgress, Paper, Typography } from "@mui/material";
 
-const TitleBoxUi = ({ title, para = false, children, icon = <List /> }) => {
+const TitleBoxUi = ({
+  title,
+  para = false,
+  children,
+  icon = <List />,
+  loading = false,
+}) => {
   return (
     <>
       <Paper
@@ -36,6 +43,7 @@ const TitleBoxUi = ({ title, para = false, children, icon = <List /> }) => {
           {children}
         </span>
       </Paper>
+      {loading && <LinearProgress />}
     </>
   );
 };

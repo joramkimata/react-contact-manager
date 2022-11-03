@@ -22,7 +22,6 @@ const DataTableUi = ({
   });
 
   useEffect(() => {
-    isLoading(loading);
     loadingData(loading);
   }, [data, loading, loadingData]);
 

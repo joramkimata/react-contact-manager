@@ -172,9 +172,13 @@ function Home(props) {
             </Paper>
             {loading && <LinearProgress />}
 
-            <Paper sx={{ mt: 2, padding: 1 }}>
+            <Paper sx={{ mt: 2, padding: 1 }} elevation={4}>
               {account ? (
-                <CreatAccount loginIn={() => setAccount(false)} />
+                <CreatAccount
+                  setOpened={setOpened}
+                  setLoading={setLoading}
+                  loginIn={() => setAccount(false)}
+                />
               ) : (
                 <Login setLoading={setLoading} createAccount={createAccount} />
               )}

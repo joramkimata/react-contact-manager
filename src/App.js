@@ -1,11 +1,4 @@
-import { useReactiveVar } from "@apollo/client";
-import { useEffect, useState } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  useNavigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Auth from "./components/Auth/Auth";
@@ -16,10 +9,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Home from "./pages/Home/Home";
 import NotFound from "./pages/NotFound/NotFound";
 import Users from "./pages/Users/Users";
-import { isLoggedInVar } from "./store/cache";
-import { ACCESS_TOKEN } from "./utils/constants";
 import { showToastTop } from "./utils/helpers";
-import { IdleTimer } from "./utils/IdleTimer";
 
 function App() {
   const { logout } = useLogout();

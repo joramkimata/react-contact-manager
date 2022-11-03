@@ -3,14 +3,60 @@ import { Box } from "@mui/system";
 import React from "react";
 import { useForm } from "react-hook-form";
 
-const CreatAccount = ({ loginIn }) => {
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { useMutation } from "@apollo/client";
+import { CREATE_USER, GET_ALL_USERS } from "../Users/graphQL";
+import { showToastTop } from "../../utils/helpers";
+import { useNavigate } from "react-router-dom";
+
+const CreatAccount = ({ loginIn, setLoading, setOpened }) => {
+  const navigate = useNavigate();
+
+  const formSchema = Yup.object().shape({
+    fullName: Yup.string().required("Full Name is required"),
+    username: Yup.string().required("Username is required"),
+    email: Yup.string()
+      .required("Email is required")
+      .email("Invalid Email provided"),
+    password: Yup.string().required("Password is required"),
+    confirmPassword: Yup.string()
+      .required("Confirm Password is required")
+      .oneOf([Yup.ref("password")], "Passwords does not match"),
+  });
+
+  const formOptions = { resolver: yupResolver(formSchema) };
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm(formOptions);
 
-  const onSubmit = async (data) => {};
+  const [createUser] = useMutation(CREATE_USER, {
+    refetchQueries: [GET_ALL_USERS],
+    onCompleted: (data) => {
+      setLoading(false);
+      showToastTop(`You can now login`, false);
+      setOpened(false);
+      navigate("/");
+    },
+    onError: (error) => {
+      setLoading(false);
+    },
+  });
+
+  const onSubmit = async (data) => {
+    setLoading(true);
+    createUser({
+      variables: {
+        input: {
+          ...data,
+          userType: "NORMAL_USER",
+        },
+      },
+    });
+  };
 
   return (
     <>
@@ -65,11 +111,11 @@ const CreatAccount = ({ loginIn }) => {
         <TextField
           label="Confirm Password"
           type="password"
-          {...register("cpassword", {
+          {...register("confirmPassword", {
             required: "Confirm Password required",
           })}
-          error={Boolean(errors.cpassword)}
-          helperText={errors.cpassword?.message}
+          error={Boolean(errors.confirmPassword)}
+          helperText={errors.confirmPassword?.message}
           variant="outlined"
           fullWidth
         />

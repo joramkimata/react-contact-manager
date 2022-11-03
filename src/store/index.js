@@ -2,8 +2,11 @@ import { ApolloClient, ApolloLink, from, HttpLink } from "@apollo/client";
 import {
   ACCESS_DENIED,
   ACCESS_TOKEN,
+  BAD_USER_INPUT,
   GRAPHQL_URL,
+  INTERNAL_SERVER_ERROR,
   INVALID_LOGIN,
+  UN_AUTHENTICATED,
 } from "../utils/constants";
 import { showToastTop } from "../utils/helpers";
 import { cache, isLoggedInVar } from "./cache";
@@ -29,8 +32,17 @@ const httpLink = new HttpLink({
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
-    graphQLErrors.forEach(({ message, locations, path }) => {
-      switch (message) {
+    graphQLErrors.forEach(({ message, locations, path, extensions }) => {
+      switch (extensions.code) {
+        case INTERNAL_SERVER_ERROR:
+          showToastTop(message);
+          break;
+        case UN_AUTHENTICATED:
+          showToastTop(`Un-authorization  request`);
+          break;
+        case BAD_USER_INPUT:
+          showToastTop(extensions.response.message[0]);
+          break;
         case INVALID_LOGIN:
           isLoggedInVar(false);
           break;
@@ -38,6 +50,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
           showToastTop(message);
           break;
         default:
+          showToastTop(message);
           break;
       }
     });
