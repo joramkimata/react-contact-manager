@@ -5,9 +5,12 @@ import Auth from "./components/Auth/Auth";
 import MainLayout from "./components/MainLayout/MainLayout";
 import useIdleTimer from "./hooks/useIdleTimer";
 import useLogout from "./hooks/useLogout";
+import Contacts from "./pages/Contacts/Contacts";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Home from "./pages/Home/Home";
+import MyContacts from "./pages/MyContacts/MyContacts";
 import NotFound from "./pages/NotFound/NotFound";
+import Roles from "./pages/Roles/Roles";
 import Users from "./pages/Users/Users";
 import { showToastTop } from "./utils/helpers";
 
@@ -34,10 +37,10 @@ function App() {
           <Route element={<Auth />}>
             <Route element={<MainLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/my-contacts" element={<Users />} />
-              <Route path="/contacts" element={<Users />} />
+              <Route path="/my-contacts" element={<MyContacts />} />
+              <Route path="/contacts" element={<Contacts />} />
               <Route path="/users" element={<Users />} />
-              <Route path="/roles" element={<Users />} />
+              <Route path="/roles" element={<Roles />} />
             </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
