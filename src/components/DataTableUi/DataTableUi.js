@@ -16,6 +16,7 @@ const DataTableUi = ({
 }) => {
   const [tData, setTData] = useState([]);
   const client = useApolloClient();
+  const [typing, setTyping] = useState(false);
 
   const { loading, data } = useQuery(query, {
     fetchPolicy: "network-only",
@@ -26,6 +27,8 @@ const DataTableUi = ({
   }, [data, loading, loadingData]);
 
   const searchCacheData = async (e) => {
+    e.target.value ? setTyping(true) : setTyping(false);
+
     if (e.target.value) {
       const { data } = await client.query({
         query: query,
@@ -55,6 +58,10 @@ const DataTableUi = ({
         ...d,
       };
     });
+  }
+
+  if (typing && tData.length === 0) {
+    tableData = [];
   }
 
   return (

@@ -1,15 +1,15 @@
 .ant-modal-header {
-    background-color: rgb(252, 253, 254, 0.7) !important;
+    background-color: #fafafa !important;
 }
 
 .ant-modal-title {
-    color: white;
+    color: black;
 }
 
 .ant-modal-close {
-    color: white;
+    color: black;
 }
 
 .ant-modal-close:hover {
-    color: white;
+    color: black;
 }

@@ -10,7 +10,9 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Home from "./pages/Home/Home";
 import MyContacts from "./pages/MyContacts/MyContacts";
 import NotFound from "./pages/NotFound/NotFound";
+import RoleDetails from "./pages/RoleDetails/RoleDetails";
 import Roles from "./pages/Roles/Roles";
+import Settings from "./pages/Settings/Settings";
 import Users from "./pages/Users/Users";
 import { showToastTop } from "./utils/helpers";
 
@@ -41,6 +43,8 @@ function App() {
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/users" element={<Users />} />
               <Route path="/roles" element={<Roles />} />
+              <Route path="/roles/:uuid" element={<RoleDetails />} />
+              <Route path="/settings" element={<Settings />} />
             </Route>
           </Route>
           <Route path="*" element={<NotFound />} />
