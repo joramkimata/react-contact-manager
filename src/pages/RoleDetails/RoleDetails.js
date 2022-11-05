@@ -1,4 +1,4 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { ArrowBack, Info } from "@mui/icons-material";
 import {
   Chip,
@@ -13,13 +13,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import FAB from "../../components/FAB/FAB";
 import RolePermissionsManagerUi from "../../components/RolePermissionsManagerUi/RolePermissionsManagerUi";
 import TitleBoxUi from "../../components/TitleBoxUi/TitleBoxUi";
-import { GET_ROLE } from "../Roles/graphQL";
+import { promptBox, showToastTop } from "../../utils/helpers";
+import { ASSIGN_PERMISSIONS, GET_ALL_ROLES, GET_ROLE } from "../Roles/graphQL";
 
 const RoleDetails = () => {
   const { uuid } = useParams();
   const navigate = useNavigate();
 
   const [permx, setPermx] = useState([]);
+  const [isSubmit, setSubmit] = useState(false);
 
   const { loading, data } = useQuery(GET_ROLE, {
     variables: {
@@ -28,8 +30,29 @@ const RoleDetails = () => {
     fetchPolicy: "network-only",
   });
 
+  const [assignPerms] = useMutation(ASSIGN_PERMISSIONS, {
+    refetchQueries: [GET_ALL_ROLES],
+    onCompleted: (data) => {
+      showToastTop(`Successfully updated`, false);
+      setSubmit(false);
+    },
+    onError: (error) => {
+      setSubmit(false);
+    },
+  });
+
   const assignPermissions = () => {
-    console.log(permx);
+    promptBox(() => {
+      setSubmit(true);
+      assignPerms({
+        variables: {
+          input: {
+            roleUUID: uuid,
+            permissionUUIDs: permx,
+          },
+        },
+      });
+    }, ``);
   };
 
   return (
@@ -61,6 +84,7 @@ const RoleDetails = () => {
             </div>
           </Paper>
 
+          {isSubmit && <LinearProgress />}
           <RolePermissionsManagerUi
             permissionsGroups={
               data.getAllPermissionsGroupedByPermissionGroupName

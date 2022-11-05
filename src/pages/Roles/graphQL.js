@@ -59,3 +59,11 @@ export const GET_ROLE = gql`
     }
   }
 `;
+
+export const ASSIGN_PERMISSIONS = gql`
+  mutation assignPermissions($input: AssignPermissionsInput!) {
+    assignPermissions(assignPermissionsInput: $input) {
+      uuid
+    }
+  }
+`;
