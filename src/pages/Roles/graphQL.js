@@ -47,5 +47,15 @@ export const GET_ROLE = gql`
         name
       }
     }
+    getAllPermissionsGroupedByPermissionGroupName(roleUuid: $uuid) {
+      permissionGroupName
+      permissions {
+        uuid
+        name
+        displayName
+        groupName
+        belongToThisRole
+      }
+    }
   }
 `;

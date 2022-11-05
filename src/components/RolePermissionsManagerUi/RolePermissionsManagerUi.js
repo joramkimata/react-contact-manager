@@ -6,8 +6,9 @@ import {
   Box,
   Checkbox,
   FormControlLabel,
+  Typography,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const RolePermissionsManagerUi = ({ permissionsGroups, getPermissions }) => {
   const [permissions, setPermissions] = useState([]);
@@ -49,7 +50,7 @@ const RolePermissionsManagerUi = ({ permissionsGroups, getPermissions }) => {
     <>
       {permissionsGroups.map((g, i) => (
         <>
-          <Accordion>
+          <Accordion expanded>
             <AccordionSummary expandIcon={<ExpandMoreRounded />}>
               <Typography>{`${i + 1}. ${g?.permissionGroupName}`}</Typography>
             </AccordionSummary>

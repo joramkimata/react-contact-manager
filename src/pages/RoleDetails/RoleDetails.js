@@ -10,6 +10,8 @@ import {
 import { Divider } from "antd";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import FAB from "../../components/FAB/FAB";
+import RolePermissionsManagerUi from "../../components/RolePermissionsManagerUi/RolePermissionsManagerUi";
 import TitleBoxUi from "../../components/TitleBoxUi/TitleBoxUi";
 import { GET_ROLE } from "../Roles/graphQL";
 
@@ -37,20 +39,31 @@ const RoleDetails = () => {
       {loading && <LinearProgress />}
 
       {data && (
-        <Paper elevation={5} sx={{ padding: 2, mt: 2, mb: 2 }}>
-          <div className="row">
-            <div className="col-6">
-              <Typography variant="h6">Name</Typography>
-              <Divider />
-              <Chip label={data.getRole.name} />
+        <>
+          <Paper elevation={5} sx={{ padding: 2, mt: 2, mb: 2 }}>
+            <div className="row">
+              <div className="col-6">
+                <Typography variant="h6">Name</Typography>
+                <Divider />
+                <Chip label={data.getRole.name} />
+              </div>
+              <div className="col-6">
+                <Typography variant="h6">Display Name</Typography>
+                <Divider />
+                <Chip label={data.getRole.displayName} />
+              </div>
             </div>
-            <div className="col-6">
-              <Typography variant="h6">Display Name</Typography>
-              <Divider />
-              <Chip label={data.getRole.displayName} />
-            </div>
-          </div>
-        </Paper>
+          </Paper>
+
+          <RolePermissionsManagerUi
+            permissionsGroups={
+              data.getAllPermissionsGroupedByPermissionGroupName
+            }
+            getPermissions={(perms) => console.log(perms)}
+          />
+
+          <FAB onClick={() => alert()} title="Assign Permissions" />
+        </>
       )}
     </>
   );
