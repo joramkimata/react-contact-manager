@@ -26,7 +26,7 @@ const ModalFooterUi = ({ onCancel, loading = false }) => {
               disabled={loading}
               startIcon={<Save />}
               size="medium"
-              sx={{ backgroundColor: "#fafafa" }}
+              color="inherit"
             >
               Save
             </Button>
