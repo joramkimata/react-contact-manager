@@ -20,7 +20,7 @@ function App() {
   const { logout } = useLogout();
 
   useIdleTimer(() => {
-    callLogoutUser();
+    //callLogoutUser();
   }, 3000);
 
   const callLogoutUser = () => {

@@ -16,14 +16,22 @@ import MailIcon from "@mui/icons-material/Mail";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   AccountBoxOutlined,
+  AccountCircle,
   ContactEmergencyOutlined,
   ContactMailOutlined,
   Dashboard,
+  Edit,
+  ExitToApp,
   ListAlt,
+  Lock,
   Settings,
 } from "@mui/icons-material";
 
 import contactLogo from "../../assets/contacts.png";
+import { Avatar, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
+
+import user from "../../assets/user.png";
+import useLogout from "../../hooks/useLogout";
 
 const drawerWidth = 240;
 
@@ -79,12 +87,37 @@ export default function MainLayout() {
 
   const location = useLocation();
 
+  const { logout } = useLogout();
+
   React.useEffect(() => {
     const path = location.pathname.split("/")[1];
     if (path) {
       setSelectedMenu(path);
     }
   }, [location]);
+
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const exitApp = () => {
+    handleCloseUserMenu();
+    logout();
+  };
+
+  const changePass = () => {
+    handleCloseUserMenu();
+  };
+
+  const profile = () => {
+    handleCloseUserMenu();
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -94,10 +127,58 @@ export default function MainLayout() {
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
-        <Toolbar>
+        <Toolbar
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
           <Typography variant="h6" noWrap component="div">
             Contact Manager
           </Typography>
+          <Box>
+            <Tooltip title="">
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                <Avatar alt="Remy Sharp" src={user} />
+              </IconButton>
+            </Tooltip>
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              <MenuItem key={`change-pass`} onClick={() => profile()}>
+                <ListItemIcon>
+                  <AccountCircle fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Profile</ListItemText>
+              </MenuItem>
+              <MenuItem key={`change-pass`} onClick={() => changePass()}>
+                <ListItemIcon>
+                  <Lock fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Change Password</ListItemText>
+              </MenuItem>
+              <MenuItem key={`logout`} onClick={() => exitApp()}>
+                <ListItemIcon>
+                  <ExitToApp fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Logout</ListItemText>
+              </MenuItem>
+            </Menu>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
