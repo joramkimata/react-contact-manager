@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { Divider } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import FAB from "../../components/FAB/FAB";
 import RolePermissionsManagerUi from "../../components/RolePermissionsManagerUi/RolePermissionsManagerUi";
@@ -19,12 +19,18 @@ const RoleDetails = () => {
   const { uuid } = useParams();
   const navigate = useNavigate();
 
+  const [permx, setPermx] = useState([]);
+
   const { loading, data } = useQuery(GET_ROLE, {
     variables: {
       uuid,
     },
     fetchPolicy: "network-only",
   });
+
+  const assignPermissions = () => {
+    console.log(permx);
+  };
 
   return (
     <>
@@ -59,10 +65,10 @@ const RoleDetails = () => {
             permissionsGroups={
               data.getAllPermissionsGroupedByPermissionGroupName
             }
-            getPermissions={(perms) => console.log(perms)}
+            getPermissions={(perms) => setPermx(perms)}
           />
 
-          <FAB onClick={() => alert()} title="Assign Permissions" />
+          <FAB onClick={assignPermissions} title="Assign Permissions" />
         </>
       )}
     </>
