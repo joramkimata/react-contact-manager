@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Home from "./pages/Home/Home";
 import MyContacts from "./pages/MyContacts/MyContacts";
 import NotFound from "./pages/NotFound/NotFound";
+import Profile from "./pages/Profile/Profile";
 import RoleDetails from "./pages/RoleDetails/RoleDetails";
 import Roles from "./pages/Roles/Roles";
 import Settings from "./pages/Settings/Settings";
@@ -45,6 +46,7 @@ function App() {
               <Route path="/roles" element={<Roles />} />
               <Route path="/roles/:uuid" element={<RoleDetails />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/profile" element={<Profile />} />
             </Route>
           </Route>
           <Route path="*" element={<NotFound />} />

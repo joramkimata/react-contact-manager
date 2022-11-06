@@ -6,21 +6,17 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   AccountBoxOutlined,
   AccountCircle,
   ContactEmergencyOutlined,
   ContactMailOutlined,
   Dashboard,
-  Edit,
   ExitToApp,
   ListAlt,
   Lock,
@@ -30,8 +26,17 @@ import {
 import contactLogo from "../../assets/contacts.png";
 import { Avatar, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 
-import user from "../../assets/user.png";
+import user from "../../assets/avatar.png";
 import useLogout from "../../hooks/useLogout";
+import ModalContainerUi from "../ModalContainerUi/ModalContainerUi";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import Input from "../Input/Input";
+import ModalFooterUi from "../ModalFooterUi/ModalFooterUi";
+import { useMutation } from "@apollo/client";
+import { showToastTop } from "../../utils/helpers";
+import { CHANGE_PASSWORD } from "./graphQL";
 
 const drawerWidth = 240;
 
@@ -82,6 +87,24 @@ const menuList = [
 
 export default function MainLayout() {
   const [selectedMenu, setSelectedMenu] = React.useState("dashboard");
+  const [opened, setOpened] = React.useState(false);
+  const [isChangPass, setChangPass] = React.useState(false);
+
+  const formSchema = Yup.object().shape({
+    password: Yup.string().required("Password is required"),
+    confirmPassword: Yup.string()
+      .required("Confirm Password is required")
+      .oneOf([Yup.ref("password")], "Passwords does not match"),
+  });
+
+  const formOptions = { resolver: yupResolver(formSchema) };
+
+  const {
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors },
+  } = useForm(formOptions);
 
   const navigate = useNavigate();
 
@@ -95,6 +118,18 @@ export default function MainLayout() {
       setSelectedMenu(path);
     }
   }, [location]);
+
+  const [changePassword] = useMutation(CHANGE_PASSWORD, {
+    refetchQueries: [],
+    onCompleted: (data) => {
+      setChangPass(false);
+      showToastTop(`Successfully changed`, false);
+      setOpened(false);
+    },
+    onError: (error) => {
+      setChangPass(false);
+    },
+  });
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -113,10 +148,21 @@ export default function MainLayout() {
 
   const changePass = () => {
     handleCloseUserMenu();
+    setOpened(true);
   };
 
   const profile = () => {
     handleCloseUserMenu();
+    navigate("/profile");
+  };
+
+  const handlePasswordChange = (data) => {
+    setChangPass(true);
+    changePassword({
+      variables: {
+        ...data,
+      },
+    });
   };
 
   return (
@@ -159,19 +205,19 @@ export default function MainLayout() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem key={`change-pass`} onClick={() => profile()}>
+              <MenuItem onClick={() => profile()}>
                 <ListItemIcon>
                   <AccountCircle fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Profile</ListItemText>
               </MenuItem>
-              <MenuItem key={`change-pass`} onClick={() => changePass()}>
+              <MenuItem onClick={() => changePass()}>
                 <ListItemIcon>
                   <Lock fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Change Password</ListItemText>
               </MenuItem>
-              <MenuItem key={`logout`} onClick={() => exitApp()}>
+              <MenuItem onClick={() => exitApp()}>
                 <ListItemIcon>
                   <ExitToApp fontSize="small" />
                 </ListItemIcon>
@@ -233,6 +279,30 @@ export default function MainLayout() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
+        <ModalContainerUi
+          top={200}
+          onCancel={() => setOpened(false)}
+          visible={opened}
+          handleSubmit={handleSubmit}
+          onSubmit={handlePasswordChange}
+          title={`Change Password`}
+          footer={<ModalFooterUi onCancel={() => null} loading={isChangPass} />}
+        >
+          <Input
+            errors={errors}
+            label="Password"
+            type="password"
+            name="password"
+            register={register}
+          />
+          <Input
+            errors={errors}
+            type="password"
+            label="Confirm Password"
+            name="confirmPassword"
+            register={register}
+          />
+        </ModalContainerUi>
         <Outlet />
       </Box>
     </Box>
