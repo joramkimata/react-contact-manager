@@ -10,29 +10,62 @@ import {
 import { Chip, LinearProgress, Paper } from "@mui/material";
 import { Space } from "antd";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import ActionBtn from "../../components/ActionBtn/ActionBtn";
 import ChangePasswordUi from "../../components/ChangePasswordUi/ChangePasswordUi";
 import DataTableUi from "../../components/DataTableUi/DataTableUi";
+import ModalContainerUi from "../../components/ModalContainerUi/ModalContainerUi";
 import TitleBoxUi from "../../components/TitleBoxUi/TitleBoxUi";
 import { promptBox, showToastTop } from "../../utils/helpers";
+
+import * as Yup from "yup";
+
 import {
   ACTIVATE_USER,
   BLOCK_USER,
   CHANGE_USER_PASSWORD,
   DELETE_USER,
   GET_ALL_USERS,
+  UPDATE_USER,
 } from "./graphQL";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Input from "../../components/Input/Input";
+import ModalFooterUi from "../../components/ModalFooterUi/ModalFooterUi";
+import { UPDATE_ROLE } from "../Roles/graphQL";
 
 const Users = () => {
   const [isLoad, setLoad] = useState(false);
   const [isSubmit, setSubmit] = useState(false);
+  const [isUserEditSubmit, setUserEditSubmit] = useState(false);
   const [selectedUid, setSelectedUid] = useState();
   const [isChangPass, setChangPass] = useState(false);
+  const [isEditForm, setEditForm] = useState(false);
 
   const [opened, setOpened] = useState(false);
 
   const navigate = useNavigate();
+
+  // edit user form
+
+  const formSchema = Yup.object().shape({
+    fullName: Yup.string().required("Full Name is required"),
+    username: Yup.string().required("Username is required"),
+    email: Yup.string()
+      .required("Email is required")
+      .email("Invalid Email provided"),
+  });
+
+  const formOptions = { resolver: yupResolver(formSchema) };
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    clearErrors,
+    formState: { errors },
+  } = useForm(formOptions);
 
   const [activateUser] = useMutation(ACTIVATE_USER, {
     refetchQueries: [GET_ALL_USERS],
@@ -79,8 +112,25 @@ const Users = () => {
     },
   });
 
-  const handleEditUser = (uuid) => {
-    alert(uuid);
+  const [updateUser] = useMutation(UPDATE_USER, {
+    refetchQueries: [GET_ALL_USERS],
+    onCompleted: (data) => {
+      setUserEditSubmit(false);
+      showToastTop(`Successfully updated`, false);
+      setEditForm(false);
+    },
+    onError: (error) => {
+      setUserEditSubmit(false);
+    },
+  });
+
+  const handleEditUser = (rec) => {
+    setSelectedUid(rec.uuid);
+    setEditForm(true);
+    clearErrors();
+    setValue("fullName", rec.fullName);
+    setValue("email", rec.email);
+    setValue("username", rec.username);
   };
 
   const handleActivateUser = (uuid) => {
@@ -130,6 +180,25 @@ const Users = () => {
     });
   };
 
+  const handleEditUserForm = (data) => {
+    setUserEditSubmit(true);
+    updateUser({
+      variables: {
+        uuid: selectedUid,
+        input: {
+          ...data,
+          userType: "NORMAL_USER",
+        },
+      },
+    });
+  };
+
+  const handleEditFormClear = () => {
+    reset();
+    setUserEditSubmit(false);
+    clearErrors();
+  };
+
   const columns = [
     {
       title: "#",
@@ -165,7 +234,7 @@ const Users = () => {
         <Space>
           <ActionBtn
             icon={<Edit color="info" />}
-            onClickIcon={() => handleEditUser(rec.uuid)}
+            onClickIcon={() => handleEditUser(rec)}
             title="Edit User"
           />
           <ActionBtn
@@ -219,6 +288,40 @@ const Users = () => {
           setOpened={setOpened}
           isChangPass={isChangPass}
         />
+        <ModalContainerUi
+          top={300}
+          title="Edit User Details"
+          width={700}
+          handleSubmit={handleSubmit}
+          onSubmit={handleEditUserForm}
+          visible={isEditForm}
+          onCancel={() => setEditForm(false)}
+          footer={
+            <ModalFooterUi
+              onCancel={() => handleEditFormClear()}
+              loading={isUserEditSubmit}
+            />
+          }
+        >
+          <Input
+            errors={errors}
+            label="Full Name"
+            name="fullName"
+            register={register}
+          />
+          <Input
+            errors={errors}
+            label="Email"
+            name="email"
+            register={register}
+          />
+          <Input
+            errors={errors}
+            label="Username"
+            name="username"
+            register={register}
+          />
+        </ModalContainerUi>
       </Paper>
     </>
   );

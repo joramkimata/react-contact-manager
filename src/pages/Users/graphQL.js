@@ -61,3 +61,11 @@ export const CHANGE_USER_PASSWORD = gql`
     }
   }
 `;
+
+export const UPDATE_USER = gql`
+  mutation updateUser($uuid: String!, $input: UpdateUserInput!) {
+    updateUser(uuid: $uuid, userInput: $input) {
+      uuid
+    }
+  }
+`;
