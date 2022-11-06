@@ -13,3 +13,14 @@ export const CHANGE_PASSWORD = gql`
     }
   }
 `;
+
+export const GET_CURRENT_USER = gql`
+  query getCurrentUserInfo {
+    getCurrentUserInfo {
+      uuid
+      fullName
+      username
+      email
+    }
+  }
+`;

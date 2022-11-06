@@ -14,6 +14,7 @@ import Profile from "./pages/Profile/Profile";
 import RoleDetails from "./pages/RoleDetails/RoleDetails";
 import Roles from "./pages/Roles/Roles";
 import Settings from "./pages/Settings/Settings";
+import UserDetails from "./pages/UserDetails/UserDetails";
 import Users from "./pages/Users/Users";
 import { showToastTop } from "./utils/helpers";
 
@@ -43,6 +44,7 @@ function App() {
               <Route path="/my-contacts" element={<MyContacts />} />
               <Route path="/contacts" element={<Contacts />} />
               <Route path="/users" element={<Users />} />
+              <Route path="/users/:uuid" element={<UserDetails />} />
               <Route path="/roles" element={<Roles />} />
               <Route path="/roles/:uuid" element={<RoleDetails />} />
               <Route path="/settings" element={<Settings />} />

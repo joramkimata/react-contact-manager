@@ -44,3 +44,20 @@ export const DELETE_USER = gql`
     }
   }
 `;
+
+export const CHANGE_USER_PASSWORD = gql`
+  mutation changeUserPassword(
+    $confirmPassword: String!
+    $password: String!
+    $uuid: String!
+  ) {
+    changeUserPassword(
+      confirmPassword: $confirmPassword
+      password: $password
+      uuid: $uuid
+    ) {
+      uuid
+      fullName
+    }
+  }
+`;

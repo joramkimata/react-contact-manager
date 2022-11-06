@@ -10,13 +10,16 @@ import {
 import { Chip, LinearProgress, Paper } from "@mui/material";
 import { Space } from "antd";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ActionBtn from "../../components/ActionBtn/ActionBtn";
+import ChangePasswordUi from "../../components/ChangePasswordUi/ChangePasswordUi";
 import DataTableUi from "../../components/DataTableUi/DataTableUi";
 import TitleBoxUi from "../../components/TitleBoxUi/TitleBoxUi";
 import { promptBox, showToastTop } from "../../utils/helpers";
 import {
   ACTIVATE_USER,
   BLOCK_USER,
+  CHANGE_USER_PASSWORD,
   DELETE_USER,
   GET_ALL_USERS,
 } from "./graphQL";
@@ -24,6 +27,12 @@ import {
 const Users = () => {
   const [isLoad, setLoad] = useState(false);
   const [isSubmit, setSubmit] = useState(false);
+  const [selectedUid, setSelectedUid] = useState();
+  const [isChangPass, setChangPass] = useState(false);
+
+  const [opened, setOpened] = useState(false);
+
+  const navigate = useNavigate();
 
   const [activateUser] = useMutation(ACTIVATE_USER, {
     refetchQueries: [GET_ALL_USERS],
@@ -52,6 +61,18 @@ const Users = () => {
     onCompleted: (data) => {
       setSubmit(false);
       showToastTop(`Successfully deleted`, false);
+    },
+    onError: (error) => {
+      setSubmit(false);
+    },
+  });
+
+  const [changeUserPassword] = useMutation(CHANGE_USER_PASSWORD, {
+    refetchQueries: [GET_ALL_USERS],
+    onCompleted: (data) => {
+      setChangPass(false);
+      showToastTop(`Successfully changed`, false);
+      setOpened(false);
     },
     onError: (error) => {
       setSubmit(false);
@@ -92,6 +113,20 @@ const Users = () => {
           uuid,
         },
       });
+    });
+  };
+
+  const handleViewUser = (uuid) => {
+    navigate(`/users/${uuid}`);
+  };
+
+  const handlePasswordChange = (data) => {
+    setChangPass(true);
+    changeUserPassword({
+      variables: {
+        uuid: selectedUid,
+        ...data,
+      },
     });
   };
 
@@ -148,11 +183,21 @@ const Users = () => {
             <ActionBtn
               icon={<LockOpen color="success" />}
               onClickIcon={() => handleBlockUser(rec.uuid)}
-              title="Block Users"
+              title="Block User"
             />
           )}
-          <ActionBtn icon={<RemoveRedEyeOutlined />} />
-          <ActionBtn icon={<Key color="warning" />} />
+          <ActionBtn
+            onClickIcon={() => handleViewUser(rec.uuid)}
+            title="View User"
+            icon={<RemoveRedEyeOutlined />}
+          />
+          <ActionBtn
+            onClickIcon={() => {
+              setOpened(true);
+              setSelectedUid(rec.uuid);
+            }}
+            icon={<Key color="warning" />}
+          />
         </Space>
       ),
     },
@@ -167,6 +212,12 @@ const Users = () => {
           columns={columns}
           query={GET_ALL_USERS}
           queryName="getUsers"
+        />
+        <ChangePasswordUi
+          handlePasswordChangex={handlePasswordChange}
+          opened={opened}
+          setOpened={setOpened}
+          isChangPass={isChangPass}
         />
       </Paper>
     </>

@@ -34,9 +34,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import Input from "../Input/Input";
 import ModalFooterUi from "../ModalFooterUi/ModalFooterUi";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { showToastTop } from "../../utils/helpers";
-import { CHANGE_PASSWORD } from "./graphQL";
+import { CHANGE_PASSWORD, GET_CURRENT_USER } from "./graphQL";
 
 const drawerWidth = 240;
 
