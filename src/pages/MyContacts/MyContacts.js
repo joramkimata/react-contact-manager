@@ -16,6 +16,7 @@ import {
   DELETE_CONTACT,
   GET_MY_CONTACTS,
   MAKE_CONTACT_PUBLIC,
+  UPDATE_CONTACT,
 } from "./graphQL";
 
 const MyContacts = () => {
@@ -24,12 +25,14 @@ const MyContacts = () => {
   const [formTitle, setFormTitle] = useState(`Add Contact`);
   const [isSubmit, setSubmit] = useState(false);
   const [updating, setUpdating] = useState(false);
+  const [selectedUid, setSelectedUid] = useState(null);
 
   const {
     handleSubmit,
     register,
     reset,
     clearErrors,
+    setValue,
     formState: { errors },
   } = useForm();
 
@@ -73,15 +76,40 @@ const MyContacts = () => {
     },
   });
 
+  const [updateContact] = useMutation(UPDATE_CONTACT, {
+    refetchQueries: [GET_MY_CONTACTS],
+    onCompleted: (data) => {
+      setSubmit(false);
+      handleFormCancel();
+      openForm(false);
+      showToastTop(`Successfully Updated`, false);
+    },
+    onError: (error) => {
+      setSubmit(false);
+    },
+  });
+
   const onSubmit = (data) => {
-    setSubmit(true);
-    createContact({
-      variables: {
-        input: {
-          ...data,
+    if (selectedUid) {
+      setSubmit(true);
+      updateContact({
+        variables: {
+          uuid: selectedUid,
+          input: {
+            ...data,
+          },
         },
-      },
-    });
+      });
+    } else {
+      setSubmit(true);
+      createContact({
+        variables: {
+          input: {
+            ...data,
+          },
+        },
+      });
+    }
   };
 
   const handleDeleteContact = (uuid) => {
@@ -104,6 +132,13 @@ const MyContacts = () => {
         },
       });
     }, ``);
+  };
+
+  const handleEditContact = (rec) => {
+    openForm(true);
+    setFormTitle(`Edit Contact`);
+    setSelectedUid(rec.uuid);
+    setValue("phoneNumber", rec.phoneNumber);
   };
 
   const columns = [
@@ -135,7 +170,10 @@ const MyContacts = () => {
       render: (_, rec) => {
         return (
           <Space>
-            <ActionBtn icon={<Edit color="info" />} />
+            <ActionBtn
+              onClickIcon={() => handleEditContact(rec)}
+              icon={<Edit color="info" />}
+            />
             <ActionBtn
               onClickIcon={() => handleDeleteContact(rec.uuid)}
               icon={<Delete color="error" />}

@@ -33,3 +33,11 @@ export const MAKE_CONTACT_PUBLIC = gql`
     }
   }
 `;
+
+export const UPDATE_CONTACT = gql`
+  mutation updateContact($uuid: String!, $input: ContactInput!) {
+    updateContact(uuid: $uuid, contactInput: $input) {
+      uuid
+    }
+  }
+`;
