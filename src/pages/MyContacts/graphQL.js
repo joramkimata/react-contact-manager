@@ -17,3 +17,19 @@ export const CREATE_CONTACT = gql`
     }
   }
 `;
+
+export const DELETE_CONTACT = gql`
+  mutation deleteContact($uuid: String!) {
+    deleteContact(uuid: $uuid) {
+      uuid
+    }
+  }
+`;
+
+export const MAKE_CONTACT_PUBLIC = gql`
+  mutation makeContactPublic($uuid: String!) {
+    makeContactPublic(uuid: $uuid) {
+      uuid
+    }
+  }
+`;

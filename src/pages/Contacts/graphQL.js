@@ -5,6 +5,7 @@ export const GET_ALL_CONTACTS = gql`
     getAllContacts {
       uuid
       phoneNumber
+      isPublic
       user {
         fullName
         username

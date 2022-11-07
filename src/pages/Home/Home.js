@@ -15,13 +15,20 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Lock, Search } from "@mui/icons-material";
 import { Modal } from "@mantine/core";
-import { Alert, CircularProgress, LinearProgress, Paper } from "@mui/material";
+import {
+  Alert,
+  Chip,
+  CircularProgress,
+  LinearProgress,
+  Paper,
+} from "@mui/material";
 import Login from "../Login/Login";
 import CreatAccount from "../CreateAccount/CreatAccount";
 import { useQuery } from "@apollo/client";
 import { GET_PUBLIC_CONTACTS } from "./graphQL";
 
 import noData from "../../assets/no_data.png";
+import device from "../../assets/device.png";
 
 const drawerWidth = 240;
 const navItems = ["Login"];
@@ -210,7 +217,41 @@ function Home(props) {
               <img src={noData} style={{ width: 600 }} />
             </div>
           ) : (
-            <div className="row"></div>
+            <div className="container">
+              <div className="row">
+                {data &&
+                  data.getPublicContacts.map((c) => (
+                    <div key={c.uuid} className="col-3">
+                      <Paper
+                        elevation={4}
+                        sx={{
+                          padding: 2,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexBasis: 100,
+                          flexDirection: "column",
+                        }}
+                      >
+                        <img src={device} style={{ width: 100 }} />
+                        <Chip
+                          size="small"
+                          sx={{ mt: 2 }}
+                          color="info"
+                          label={c.phoneNumber}
+                        />
+
+                        <Chip
+                          size="small"
+                          sx={{ mt: 1 }}
+                          color="success"
+                          label={c.user.fullName}
+                        />
+                      </Paper>
+                    </div>
+                  ))}
+              </div>
+            </div>
           )}
         </Box>
       </Box>

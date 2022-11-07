@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client";
 import { Add, Delete, Edit, Lock, LockOpen } from "@mui/icons-material";
-import { Button, Chip, Paper } from "@mui/material";
+import { Button, Chip, LinearProgress, Paper } from "@mui/material";
 import { Space } from "antd";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -10,14 +10,20 @@ import RequiredInput from "../../components/Input/RequiredInput";
 import ModalContainerUi from "../../components/ModalContainerUi/ModalContainerUi";
 import ModalFooterUi from "../../components/ModalFooterUi/ModalFooterUi";
 import TitleBoxUi from "../../components/TitleBoxUi/TitleBoxUi";
-import { showToastTop } from "../../utils/helpers";
-import { CREATE_CONTACT, GET_MY_CONTACTS } from "./graphQL";
+import { promptBox, showToastTop } from "../../utils/helpers";
+import {
+  CREATE_CONTACT,
+  DELETE_CONTACT,
+  GET_MY_CONTACTS,
+  MAKE_CONTACT_PUBLIC,
+} from "./graphQL";
 
 const MyContacts = () => {
   const [isLoad, setLoad] = useState(false);
   const [isFormOpen, openForm] = useState(false);
   const [formTitle, setFormTitle] = useState(`Add Contact`);
   const [isSubmit, setSubmit] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
   const {
     handleSubmit,
@@ -38,9 +44,32 @@ const MyContacts = () => {
       handleFormCancel();
       openForm(false);
       showToastTop(`Successfully saved`, false);
+      setSubmit(false);
     },
     onError: (error) => {
       setSubmit(false);
+    },
+  });
+
+  const [deleteContact] = useMutation(DELETE_CONTACT, {
+    refetchQueries: [GET_MY_CONTACTS],
+    onCompleted: (data) => {
+      setUpdating(false);
+      showToastTop(`Successfully deleted`, false);
+    },
+    onError: (error) => {
+      setUpdating(false);
+    },
+  });
+
+  const [makeContactPublic] = useMutation(MAKE_CONTACT_PUBLIC, {
+    refetchQueries: [GET_MY_CONTACTS],
+    onCompleted: (data) => {
+      setUpdating(false);
+      showToastTop(`Successfully UPDATED`, false);
+    },
+    onError: (error) => {
+      setUpdating(false);
     },
   });
 
@@ -53,6 +82,28 @@ const MyContacts = () => {
         },
       },
     });
+  };
+
+  const handleDeleteContact = (uuid) => {
+    promptBox(() => {
+      setUpdating(true);
+      deleteContact({
+        variables: {
+          uuid: uuid,
+        },
+      });
+    });
+  };
+
+  const handleMakeCantactPublic = (uuid) => {
+    promptBox(() => {
+      setUpdating(true);
+      makeContactPublic({
+        variables: {
+          uuid: uuid,
+        },
+      });
+    }, ``);
   };
 
   const columns = [
@@ -85,9 +136,13 @@ const MyContacts = () => {
         return (
           <Space>
             <ActionBtn icon={<Edit color="info" />} />
-            <ActionBtn icon={<Delete color="error" />} />
+            <ActionBtn
+              onClickIcon={() => handleDeleteContact(rec.uuid)}
+              icon={<Delete color="error" />}
+            />
             {!rec.isPublic ? (
               <ActionBtn
+                onClickIcon={() => handleMakeCantactPublic(rec.uuid)}
                 title={`Make public`}
                 icon={<LockOpen color="success" />}
               />
@@ -110,6 +165,7 @@ const MyContacts = () => {
           Add Contact
         </Button>
       </TitleBoxUi>
+      {updating && <LinearProgress />}
       <Paper sx={{ mt: 1, padding: 2 }} elevation={4}>
         <DataTableUi
           loadingData={(loading) => setLoad(loading)}
