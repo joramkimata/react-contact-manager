@@ -34,9 +34,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import Input from "../Input/Input";
 import ModalFooterUi from "../ModalFooterUi/ModalFooterUi";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery, useReactiveVar } from "@apollo/client";
 import { showToastTop } from "../../utils/helpers";
 import { CHANGE_PASSWORD, GET_CURRENT_USER } from "./graphQL";
+import { userPermissions } from "../../store/cache";
+import HasPermissionUi from "../HasPermissionUi/HasPermissionUi";
 
 const drawerWidth = 240;
 
@@ -46,49 +48,51 @@ const menuList = [
     title: "Dashboard",
     url: "/dashboard",
     icon: <Dashboard />,
-    permissions: [],
+    permission: "VIEW_DASHBOARD",
   },
   {
     key: "my-contacts",
     title: "My Contacts",
     url: "/my-contacts",
     icon: <ContactEmergencyOutlined />,
-    permissions: [],
+    permission: "MY_CONTACTS",
   },
   {
     key: "contacts",
     title: "Contacts",
     url: "/contacts",
     icon: <ContactMailOutlined />,
-    permissions: [],
+    permission: "VIEW_CONTACTS",
   },
   {
     key: "users",
     title: "Users",
     url: "/users",
     icon: <AccountBoxOutlined />,
-    permissions: [],
+    permission: "VIEW_USERS",
   },
   {
     key: "roles",
     title: "Roles",
     url: "/roles",
     icon: <ListAlt />,
-    permissions: [],
+    permission: "VIEW_ROLES",
   },
-  {
-    key: "settings",
-    title: "Settings",
-    url: "/settings",
-    icon: <Settings />,
-    permissions: [],
-  },
+  // {
+  //   key: "settings",
+  //   title: "Settings",
+  //   url: "/settings",
+  //   icon: <Settings />,
+  //   permissions: [],
+  // },
 ];
 
 export default function MainLayout() {
   const [selectedMenu, setSelectedMenu] = React.useState("dashboard");
   const [opened, setOpened] = React.useState(false);
   const [isChangPass, setChangPass] = React.useState(false);
+
+  const permissions = useReactiveVar(userPermissions);
 
   const formSchema = Yup.object().shape({
     password: Yup.string().required("Password is required"),
@@ -259,20 +263,22 @@ export default function MainLayout() {
             />
           </div>
           <List>
-            {menuList.map(({ key, icon, title, url }) => (
-              <ListItem
-                onClick={() => {
-                  navigate(url);
-                  setSelectedMenu(title);
-                }}
-                key={key}
-                disablePadding
-              >
-                <ListItemButton selected={selectedMenu === key}>
-                  <ListItemIcon>{icon}</ListItemIcon>
-                  <ListItemText primary={title} />
-                </ListItemButton>
-              </ListItem>
+            {menuList.map(({ key, icon, title, url, permission }) => (
+              <HasPermissionUi permission={permission}>
+                <ListItem
+                  onClick={() => {
+                    navigate(url);
+                    setSelectedMenu(title);
+                  }}
+                  key={key}
+                  disablePadding
+                >
+                  <ListItemButton selected={selectedMenu === key}>
+                    <ListItemIcon>{icon}</ListItemIcon>
+                    <ListItemText primary={title} />
+                  </ListItemButton>
+                </ListItem>
+              </HasPermissionUi>
             ))}
           </List>
         </Box>

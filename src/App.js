@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,6 +17,8 @@ import Roles from "./pages/Roles/Roles";
 import Settings from "./pages/Settings/Settings";
 import UserDetails from "./pages/UserDetails/UserDetails";
 import Users from "./pages/Users/Users";
+import { userPermissions } from "./store/cache";
+import { PERMISSIONS } from "./utils/constants";
 import { showToastTop } from "./utils/helpers";
 
 function App() {
@@ -32,6 +35,13 @@ function App() {
     });
     logout();
   };
+
+  useEffect(() => {
+    const permissions = localStorage.getItem(PERMISSIONS);
+    if (permissions) {
+      userPermissions(permissions);
+    }
+  }, []);
 
   return (
     <>

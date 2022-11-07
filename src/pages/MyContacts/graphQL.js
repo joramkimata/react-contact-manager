@@ -5,6 +5,15 @@ export const GET_MY_CONTACTS = gql`
     getMyContacts {
       uuid
       phoneNumber
+      isPublic
+    }
+  }
+`;
+
+export const CREATE_CONTACT = gql`
+  mutation createContact($input: ContactInput!) {
+    createContact(contactInput: $input) {
+      uuid
     }
   }
 `;

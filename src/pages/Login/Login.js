@@ -3,8 +3,8 @@ import axios from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { isLoggedInVar } from "../../store/cache";
-import { ACCESS_TOKEN, LOGIN_URL } from "../../utils/constants";
+import { isLoggedInVar, userPermissions } from "../../store/cache";
+import { ACCESS_TOKEN, LOGIN_URL, PERMISSIONS } from "../../utils/constants";
 import { showToastTop } from "../../utils/helpers";
 
 const Login = ({ setLoading, createAccount }) => {
@@ -28,6 +28,11 @@ const Login = ({ setLoading, createAccount }) => {
           ACCESS_TOKEN,
           JSON.stringify(result.data.access_token)
         );
+        localStorage.setItem(
+          PERMISSIONS,
+          JSON.stringify(result.data.permissions)
+        );
+        userPermissions(result.data.permissions);
         isLoggedInVar(true);
 
         navigate("/dashboard");
