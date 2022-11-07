@@ -29,6 +29,22 @@ import { GET_PUBLIC_CONTACTS } from "./graphQL";
 
 import noData from "../../assets/no_data.png";
 import device from "../../assets/device.png";
+import device2 from "../../assets/device_2.png";
+import device3 from "../../assets/device_3.png";
+import device4 from "../../assets/device_4.png";
+import device5 from "../../assets/device_5.png";
+import device6 from "../../assets/device_6.png";
+
+const images = [device, device2, device3, device4, device5, device6];
+
+const getRandomArbitrary = (min, max) => {
+  return Math.random() * (max - min) + min;
+};
+
+const randomImage = () => {
+  const n = parseInt(getRandomArbitrary(0, 5));
+  return images[n];
+};
 
 const drawerWidth = 240;
 const navItems = ["Login"];
@@ -233,7 +249,7 @@ function Home(props) {
                           flexDirection: "column",
                         }}
                       >
-                        <img src={device} style={{ width: 100 }} />
+                        <img src={randomImage()} style={{ width: 100 }} />
                         <Chip
                           size="small"
                           sx={{ mt: 2 }}
