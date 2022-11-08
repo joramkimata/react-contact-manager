@@ -18,6 +18,7 @@ import ModalFooterUi from "../../components/ModalFooterUi/ModalFooterUi";
 import { useMutation } from "@apollo/client";
 import { promptBox, showToastTop } from "../../utils/helpers";
 import { useNavigate } from "react-router-dom";
+import HasPermissionUi from "../../components/HasPermissionUi/HasPermissionUi";
 
 const Roles = () => {
   const [isLoad, setLoad] = useState(false);
@@ -147,10 +148,12 @@ const Roles = () => {
       key: "actions",
       render: (_, rec) => (
         <Space>
-          <ActionBtn
-            onClickIcon={() => handleEditRole(rec)}
-            icon={<Edit color="info" />}
-          />
+          <HasPermissionUi>
+            <ActionBtn
+              onClickIcon={() => handleEditRole(rec)}
+              icon={<Edit color="info" />}
+            />
+          </HasPermissionUi>
           <ActionBtn
             onClickIcon={() => handleViewRole(rec.uuid)}
             icon={<RemoveRedEyeOutlined color="success" />}

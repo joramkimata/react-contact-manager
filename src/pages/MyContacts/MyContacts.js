@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import ActionBtn from "../../components/ActionBtn/ActionBtn";
 import DataTableUi from "../../components/DataTableUi/DataTableUi";
+import HasPermissionUi from "../../components/HasPermissionUi/HasPermissionUi";
 import RequiredInput from "../../components/Input/RequiredInput";
 import ModalContainerUi from "../../components/ModalContainerUi/ModalContainerUi";
 import ModalFooterUi from "../../components/ModalFooterUi/ModalFooterUi";
@@ -170,20 +171,26 @@ const MyContacts = () => {
       render: (_, rec) => {
         return (
           <Space>
-            <ActionBtn
-              onClickIcon={() => handleEditContact(rec)}
-              icon={<Edit color="info" />}
-            />
-            <ActionBtn
-              onClickIcon={() => handleDeleteContact(rec.uuid)}
-              icon={<Delete color="error" />}
-            />
-            {!rec.isPublic ? (
+            <HasPermissionUi permission={"UPDATE_CONTACT"}>
               <ActionBtn
-                onClickIcon={() => handleMakeCantactPublic(rec.uuid)}
-                title={`Make public`}
-                icon={<LockOpen color="success" />}
+                onClickIcon={() => handleEditContact(rec)}
+                icon={<Edit color="info" />}
               />
+            </HasPermissionUi>
+            <HasPermissionUi permission={"DELETE_CONTACT"}>
+              <ActionBtn
+                onClickIcon={() => handleDeleteContact(rec.uuid)}
+                icon={<Delete color="error" />}
+              />
+            </HasPermissionUi>
+            {!rec.isPublic ? (
+              <HasPermissionUi permission={"MAKE_CONTACT_PUBLIC"}>
+                <ActionBtn
+                  onClickIcon={() => handleMakeCantactPublic(rec.uuid)}
+                  title={`Make public`}
+                  icon={<LockOpen color="success" />}
+                />
+              </HasPermissionUi>
             ) : null}
           </Space>
         );
@@ -194,23 +201,27 @@ const MyContacts = () => {
   return (
     <>
       <TitleBoxUi loading={isLoad} title={`Managae My Contacts`}>
-        <Button
-          onClick={() => openForm(true)}
-          startIcon={<Add />}
-          color="inherit"
-          variant="contained"
-        >
-          Add Contact
-        </Button>
+        <HasPermissionUi permission={"CREATE_CONTACT"}>
+          <Button
+            onClick={() => openForm(true)}
+            startIcon={<Add />}
+            color="inherit"
+            variant="contained"
+          >
+            Add Contact
+          </Button>
+        </HasPermissionUi>
       </TitleBoxUi>
       {updating && <LinearProgress />}
       <Paper sx={{ mt: 1, padding: 2 }} elevation={4}>
-        <DataTableUi
-          loadingData={(loading) => setLoad(loading)}
-          columns={columns}
-          query={GET_MY_CONTACTS}
-          queryName="getMyContacts"
-        />
+        <HasPermissionUi permission={"MY_CONTACTS"}>
+          <DataTableUi
+            loadingData={(loading) => setLoad(loading)}
+            columns={columns}
+            query={GET_MY_CONTACTS}
+            queryName="getMyContacts"
+          />
+        </HasPermissionUi>
       </Paper>
 
       <ModalContainerUi
