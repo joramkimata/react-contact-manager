@@ -209,19 +209,23 @@ export default function MainLayout() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem onClick={() => profile()}>
-                <ListItemIcon>
-                  <AccountCircle fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Profile</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => changePass()}>
-                <ListItemIcon>
-                  <Lock fontSize="small" />
-                </ListItemIcon>
-                <ListItemText>Change Password</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={() => exitApp()}>
+              <HasPermissionUi key={1} permission={"VIEW_USER_INFO"}>
+                <MenuItem onClick={() => profile()}>
+                  <ListItemIcon>
+                    <AccountCircle fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Profile</ListItemText>
+                </MenuItem>
+              </HasPermissionUi>
+              <HasPermissionUi key={2} permission={"CHANGE_USER_PASSWORD"}>
+                <MenuItem onClick={() => changePass()}>
+                  <ListItemIcon>
+                    <Lock fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>Change Password</ListItemText>
+                </MenuItem>
+              </HasPermissionUi>
+              <MenuItem key={3} onClick={() => exitApp()}>
                 <ListItemIcon>
                   <ExitToApp fontSize="small" />
                 </ListItemIcon>
@@ -266,6 +270,19 @@ export default function MainLayout() {
             {menuList.map(({ key, icon, title, url, permission }) => (
               <HasPermissionUi permission={permission}>
                 <ListItem
+                  sx={{
+                    "&& .Mui-selected, && .Mui-selected:hover": {
+                      borderTopRightRadius: 20,
+                      borderBottomRightRadius: 20,
+                      mr: 1,
+                      bgcolor: "#098FC4",
+                      color: "white",
+                      borderLeft: "4px solid black",
+                    },
+                    "&& .Mui-selected  svg, && .Mui-selected:hover  svg": {
+                      color: "white",
+                    },
+                  }}
                   onClick={() => {
                     navigate(url);
                     setSelectedMenu(title);

@@ -148,20 +148,26 @@ const Roles = () => {
       key: "actions",
       render: (_, rec) => (
         <Space>
-          <HasPermissionUi>
+          <HasPermissionUi permission={"UPDATE_ROLE"}>
             <ActionBtn
               onClickIcon={() => handleEditRole(rec)}
               icon={<Edit color="info" />}
             />
           </HasPermissionUi>
-          <ActionBtn
-            onClickIcon={() => handleViewRole(rec.uuid)}
-            icon={<RemoveRedEyeOutlined color="success" />}
-          />
-          <ActionBtn
-            onClickIcon={() => handleDeleteRole(rec.uuid)}
-            icon={<Delete color="error" />}
-          />
+
+          <HasPermissionUi permission={"VIEW_PERMISSIONS"}>
+            <ActionBtn
+              onClickIcon={() => handleViewRole(rec.uuid)}
+              icon={<RemoveRedEyeOutlined color="success" />}
+            />
+          </HasPermissionUi>
+
+          <HasPermissionUi permission={"DELETE_ROLE"}>
+            <ActionBtn
+              onClickIcon={() => handleDeleteRole(rec.uuid)}
+              icon={<Delete color="error" />}
+            />
+          </HasPermissionUi>
         </Space>
       ),
     },

@@ -11,6 +11,7 @@ import { Divider } from "antd";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import FAB from "../../components/FAB/FAB";
+import HasPermissionUi from "../../components/HasPermissionUi/HasPermissionUi";
 import RolePermissionsManagerUi from "../../components/RolePermissionsManagerUi/RolePermissionsManagerUi";
 import TitleBoxUi from "../../components/TitleBoxUi/TitleBoxUi";
 import { promptBox, showToastTop } from "../../utils/helpers";
@@ -69,30 +70,34 @@ const RoleDetails = () => {
 
       {data && (
         <>
-          <Paper elevation={5} sx={{ padding: 2, mt: 2, mb: 2 }}>
-            <div className="row">
-              <div className="col-6">
-                <Typography variant="h6">Name</Typography>
-                <Divider />
-                <Chip label={data.getRole.name} />
+          <HasPermissionUi permission={"VIEW_PERMISSIONS"}>
+            <Paper elevation={5} sx={{ padding: 2, mt: 2, mb: 2 }}>
+              <div className="row">
+                <div className="col-6">
+                  <Typography variant="h6">Name</Typography>
+                  <Divider />
+                  <Chip label={data.getRole.name} />
+                </div>
+                <div className="col-6">
+                  <Typography variant="h6">Display Name</Typography>
+                  <Divider />
+                  <Chip label={data.getRole.displayName} />
+                </div>
               </div>
-              <div className="col-6">
-                <Typography variant="h6">Display Name</Typography>
-                <Divider />
-                <Chip label={data.getRole.displayName} />
-              </div>
-            </div>
-          </Paper>
+            </Paper>
 
-          {isSubmit && <LinearProgress />}
-          <RolePermissionsManagerUi
-            permissionsGroups={
-              data.getAllPermissionsGroupedByPermissionGroupName
-            }
-            getPermissions={(perms) => setPermx(perms)}
-          />
+            {isSubmit && <LinearProgress />}
+            <RolePermissionsManagerUi
+              permissionsGroups={
+                data.getAllPermissionsGroupedByPermissionGroupName
+              }
+              getPermissions={(perms) => setPermx(perms)}
+            />
+          </HasPermissionUi>
 
-          <FAB onClick={assignPermissions} title="Assign Permissions" />
+          <HasPermissionUi permission={"ASSIGN_ROLE_PERMISSIONS"}>
+            <FAB onClick={assignPermissions} title="Assign Permissions" />
+          </HasPermissionUi>
         </>
       )}
     </>

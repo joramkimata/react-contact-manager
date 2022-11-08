@@ -33,6 +33,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Input from "../../components/Input/Input";
 import ModalFooterUi from "../../components/ModalFooterUi/ModalFooterUi";
 import { UPDATE_ROLE } from "../Roles/graphQL";
+import HasPermissionUi from "../../components/HasPermissionUi/HasPermissionUi";
 
 const Users = () => {
   const [isLoad, setLoad] = useState(false);
@@ -232,16 +233,20 @@ const Users = () => {
       key: "actions",
       render: (_, rec) => (
         <Space>
-          <ActionBtn
-            icon={<Edit color="info" />}
-            onClickIcon={() => handleEditUser(rec)}
-            title="Edit User"
-          />
-          <ActionBtn
-            icon={<Delete color="error" />}
-            onClickIcon={() => handleDeleteUser(rec.uuid)}
-            title="Delete User"
-          />
+          <HasPermissionUi permission={"UPDATE_USER"}>
+            <ActionBtn
+              icon={<Edit color="info" />}
+              onClickIcon={() => handleEditUser(rec)}
+              title="Edit User"
+            />
+          </HasPermissionUi>
+          <HasPermissionUi permission={"DELETE_USER"}>
+            <ActionBtn
+              icon={<Delete color="error" />}
+              onClickIcon={() => handleDeleteUser(rec.uuid)}
+              title="Delete User"
+            />
+          </HasPermissionUi>
           {!rec.active ? (
             <ActionBtn
               icon={<Lock color="secondary" />}
