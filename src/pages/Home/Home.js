@@ -35,14 +35,14 @@ import device4 from "../../assets/device_4.png";
 import device5 from "../../assets/device_5.png";
 import device6 from "../../assets/device_6.png";
 
-const images = [device, device2, device3, device4, device5, device6];
+const images = [device2, device4, device5, device6];
 
 const getRandomArbitrary = (min, max) => {
   return Math.random() * (max - min) + min;
 };
 
 const randomImage = () => {
-  const n = parseInt(getRandomArbitrary(0, 5));
+  const n = parseInt(getRandomArbitrary(0, 3));
   return images[n];
 };
 
