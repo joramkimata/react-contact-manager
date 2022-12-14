@@ -1,6 +1,4 @@
-//export const BASE_URL = "https://contactmanager-udemy.herokuapp.com";
-
-export const BASE_URL = "https://contact-manager-bin3.onrender.com"
+export const BASE_URL = "https://contact-manager-bin3.onrender.com";
 
 export const LOGIN_URL = `${BASE_URL}/auth/login`;
 
